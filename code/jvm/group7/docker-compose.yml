@@ -1,0 +1,47 @@
+version: "3.3"
+services:
+  spring1:
+    container_name: spring1
+    hostname: spring1
+    build:
+      context: .
+      dockerfile: dockerfile-spring
+    environment:
+      - PORT=8081
+    ports:
+      - 8081:8081
+    depends_on:
+      - db-group7
+  spring2:
+    container_name: spring2
+    hostname: spring2
+    build:
+      context: .
+      dockerfile: dockerfile-spring
+    environment:
+      - PORT=8082
+    ports:
+      - 8082:8082
+    depends_on:
+      - db-group7
+  nginx:
+    container_name: nginx
+    image: nginx
+    ports:
+      - 8080:8080
+    volumes:
+      - ./nginx:/etc/nginx
+    depends_on:
+      - spring1
+      - spring2
+  db-group7:
+    container_name: db-group7
+    build:
+      context: .
+      dockerfile: db/Dockerfile-db
+    environment:
+      - POSTGRES_USER=group7
+      - POSTGRES_PASSWORD=g7
+      - POSTGRES_DB=group7db
+    ports:
+      - 5432:5432
